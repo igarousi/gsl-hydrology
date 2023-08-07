@@ -1,17 +1,5 @@
-#pip install s3fs kerchunk zarr rioxarray geocube 
-
 import sys
 import subprocess
-
-# # implement pip as a subprocess:
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 's3fs'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'kerchunk'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'zarr'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'rioxarray'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'geocube'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'dask'])
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'distributed'])
-
 import re
 import dask
 import numpy
@@ -32,6 +20,8 @@ import geocube
 import pandas as pd
 from geocube.api.core import make_geocube
 
+
+# Function to perform zonal computation for a specific catchment ID
 def perform_zonal_computation(ds, cat_id):
 
     # subset by catchment id
@@ -52,10 +42,14 @@ def perform_zonal_computation(ds, cat_id):
     # return results
     return {f'cat-{int(cat_id)}': res}
 
+
+# Function to perform zonal mean for a specific variable in a dataset 
 def compute_zonal_mean(ds, variable):
     return {variable: ds.mean(dim=['x','y']).values}
 
 
+# Function that slices the dataset for a defined time period and then
+# calculates the zonal mean precipitation over a list of specified catchments.
 def compute_avg_p(client, ds, catchment_ids, year, month_s, month_e):
     
     # define the start and end time of the data we want to use
